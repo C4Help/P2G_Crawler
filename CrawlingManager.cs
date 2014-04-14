@@ -68,17 +68,23 @@ namespace P2G_Crawler
 
             //  Check if the Url is working
             if (!IsValidURL(Url)) return null;
-            
+
 
 
             //Crawl
-            Dictionary<string,string> list = CrawlUrl(RegNum,Url,cs);
-            return  list;
+            Dictionary<string, string> list = CrawlUrl(RegNum, Url, cs);
+            return list;
         }
 
         private static Dictionary<string, string> CrawlUrl(string RegNum, string Url, CrawlingSettings cs)
         {
+            #region Init
+            // fix the url if it doesn't have http in the begining
+            if (!Url.ToLower().Contains("http"))
+                Url = "http://" + Url;
+            // Results 
             Dictionary<string, string> results = new Dictionary<string, string>();
+            #endregion
             #region init The dictionary
             switch (cs.CrawlItemType)
             {
@@ -88,39 +94,65 @@ namespace P2G_Crawler
                     results.Add("linkedin", "");
                     results.Add("youtube", "");
                     break;
-                case "Facebook":
-                    results.Add("facebook", "");
+
+                case "Contact Info":
+                    results.Add("email", "");
+                    results.Add("phone", "");
+                    results.Add("fax", "");
                     break;
-                case "Twitter":
-                    results.Add("twitter", "");
-                    break;
-                case "YouTube":
-                    results.Add("youtube", "");
-                    break;
-                case "Linkedin":
-                    results.Add("linkedin", "");
-                    break;
+
+
             }
             #endregion
-
-
-            return null;
-        }
-
-        
-
-        public static void CrawlWebsiteLinks(string url, string[] keywords)
-        {
-
-            WebClient wc = new WebClient();
-            string SearchHtml = wc.DownloadString(url);
-            foreach (LinkItem i in LinkFinder.Find(SearchHtml))
+            #region Crawling
+            // Crawling all social media everytime
+            try
             {
-                if (i.Href != null && i.Href.ToLower().Contains("twitter"))
-                    MessageBox.Show(i.Href);
+                WebClient w = new WebClient();
+                string s = w.DownloadString(Url);
+                List<LinkItem> allLinks = LinkFinder.Find(s);
+                foreach (LinkItem i in allLinks)
+                {
+
+                    if (i.Href == null) continue;
+
+                    if (cs.CrawlItemType == "Social Media")
+                    {
+                        if (i.Href.ToLower().Contains("www.facebook"))
+                            results["facebook"] = i.Href;
+                        if (i.Href.ToLower().Contains("www.twitter"))
+                            results["twitter"] = i.Href;
+                        if (i.Href.ToLower().Contains("www.linkedin"))
+                            results["linkedin"] = i.Href;
+                        if (i.Href.ToLower().Contains("www.youtube"))
+                            results["youtube"] = i.Href;
+                    }
+                    if (cs.CrawlItemType == "Contact Info")
+                    {
+                        if (i.Href.ToLower().Contains("email"))
+                            results["email"] = i.Href;
+                        if (i.Href.ToLower().Contains("phone"))
+                            results["phone"] = i.Href;
+                        if (i.Href.ToLower().Contains("fax"))
+                            results["fax"] = i.Href;
+
+                    }
+
+
+                }
+
+
             }
+            catch { return null; }
+
+            #endregion
+
+            return results;
         }
-        private static bool IsValidURL(string CharityUrl)                  
+
+
+
+        private static bool IsValidURL(string CharityUrl)
         {
             try
             {

@@ -42,6 +42,7 @@ namespace P2G_Crawler
                     line = sr.ReadLine();
                 }
 
+                progressBar.Maximum = gridViewInputFile.Rows.Count;
             }
         }
 
@@ -67,11 +68,16 @@ namespace P2G_Crawler
                 if (Results == null) AddInvalidRaw(dr);
                 else AddValidRow(dr, Results);
 
+                progressBar.Value++;
+
             }
         }
 
         private void AddValidRow(DataGridViewRow dr, Dictionary<string, string> results)
         {
+            if (results.Count == 0) return;
+
+            // Prepare the new row
             DataGridViewRow dgvr = new DataGridViewRow();
             dgvr.CreateCells(gridViewResults);
             DataGridViewCellStyle style = new DataGridViewCellStyle();
@@ -79,25 +85,14 @@ namespace P2G_Crawler
             style.ForeColor = Color.Black;
             dgvr.Cells[2].Style = style;
 
+            // Based on the Crawling Settings, add the new data to the result grid view
             switch (cs.CrawlItemType)
             {
                 case "Social Media":
                     dgvr.SetValues(new object[] { dr.Cells[1].Value, dr.Cells[2].Value, "Valid", results["facebook"], results["linkedin"], results["twitter"], results["youtube"] });
                     break;
-                case "Facebook":
-                    dgvr.SetValues(new object[] { dr.Cells[1].Value, dr.Cells[2].Value, "Valid", results["facebook"] });
-
-                    break;
-                case "Twitter":
-                    dgvr.SetValues(new object[] { dr.Cells[1].Value, dr.Cells[2].Value, "Valid", results["twitter"] });
-
-                    break;
-                case "YouTube":
-                    dgvr.SetValues(new object[] { dr.Cells[1].Value, dr.Cells[2].Value, "Valid", results["youtube"] });
-
-                    break;
-                case "Linkedin":
-                    dgvr.SetValues(new object[] { dr.Cells[1].Value, dr.Cells[2].Value, "Valid", results["linkedin"] });
+                case "Contact Info":
+                    dgvr.SetValues(new object[] { dr.Cells[1].Value, dr.Cells[2].Value, "Valid", results["email"], results["phone"], results["fax"] });
 
                     break;
 
@@ -128,6 +123,9 @@ namespace P2G_Crawler
             DataGridViewTextBoxColumn YouTubeColumn = new DataGridViewTextBoxColumn();
             DataGridViewTextBoxColumn TwitterColumn = new DataGridViewTextBoxColumn();
             DataGridViewTextBoxColumn LinkedinColumn = new DataGridViewTextBoxColumn();
+            DataGridViewTextBoxColumn EmailColumn = new DataGridViewTextBoxColumn();
+            DataGridViewTextBoxColumn PhoneColumn = new DataGridViewTextBoxColumn();
+            DataGridViewTextBoxColumn FaxColumn = new DataGridViewTextBoxColumn();
 
             gridViewResults.Columns.Clear();
 
@@ -143,24 +141,12 @@ namespace P2G_Crawler
                     gridViewResults.Columns.AddRange(new DataGridViewTextBoxColumn[] { RegNumColumn, WebSiteColumn, ValidColumn, FacebookColumn, LinkedinColumn, TwitterColumn, YouTubeColumn });
                     Application.DoEvents();
                     break;
-                case "Facebook":
-                    FacebookColumn.HeaderText = "Facebook Link";
-                    gridViewResults.Columns.AddRange(new DataGridViewTextBoxColumn[] { RegNumColumn, WebSiteColumn, ValidColumn, FacebookColumn });
-                    Application.DoEvents();
-                    break;
-                case "Twitter":
-                    TwitterColumn.HeaderText = "Twitter Link";
-                    gridViewResults.Columns.AddRange(new DataGridViewTextBoxColumn[] { RegNumColumn, WebSiteColumn, ValidColumn, TwitterColumn });
-                    Application.DoEvents();
-                    break;
-                case "YouTube":
-                    YouTubeColumn.HeaderText = "YouTube Link";
-                    gridViewResults.Columns.AddRange(new DataGridViewTextBoxColumn[] { RegNumColumn, WebSiteColumn, ValidColumn, YouTubeColumn });
-                    Application.DoEvents();
-                    break;
-                case "Linkedin":
-                    LinkedinColumn.HeaderText = "Linkedin Link";
-                    gridViewResults.Columns.AddRange(new DataGridViewTextBoxColumn[] { RegNumColumn, WebSiteColumn, ValidColumn, LinkedinColumn });
+                case "Contact Info":
+
+                    EmailColumn.HeaderText = "Email";
+                   PhoneColumn.HeaderText = "Phone";
+                   FaxColumn.HeaderText = "Fax";
+                    gridViewResults.Columns.AddRange(new DataGridViewTextBoxColumn[] { RegNumColumn, WebSiteColumn, ValidColumn, EmailColumn, PhoneColumn, FaxColumn });
                     Application.DoEvents();
                     break;
             }
@@ -168,6 +154,39 @@ namespace P2G_Crawler
         private void comBoxCrawlWhat_SelectedIndexChanged(object sender, EventArgs e)
         {
             cs.CrawlItemType = comBoxCrawlWhat.SelectedItem.ToString();
+        }
+
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            if (ExportsaveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                if (gridViewResults.Columns.Count == 0)
+                {
+                    MessageBox.Show("No Data To Save");
+                    return;
+                } 
+                if (gridViewResults.Rows.Count == 0)
+                {
+                    MessageBox.Show("No Data To Save");
+                    return;
+                }
+
+                StringBuilder sb = new StringBuilder();
+                foreach (DataGridViewRow r in gridViewResults.Rows)
+                {
+                    for (int i = 0; i < gridViewResults.Columns.Count;i++ )
+                        sb.Append(r.Cells[i].Value + ",");
+
+                    sb.Append(Console.Out.NewLine);
+
+                    
+                }
+
+                StreamWriter sw = new StreamWriter(ExportsaveFileDialog.FileName+".csv");
+                sw.WriteLine(sb.ToString());
+                sw.Close();
+                MessageBox.Show("The file " + ExportsaveFileDialog.FileName + " is saved");
+            }
         }
     }
 }

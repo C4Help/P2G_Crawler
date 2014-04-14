@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.kryptonSplitContainer1 = new ComponentFactory.Krypton.Toolkit.KryptonSplitContainer();
             this.gridViewInputFile = new ComponentFactory.Krypton.Toolkit.KryptonDataGridView();
             this.ID = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -39,6 +40,8 @@
             this.lblLoadedfile = new ComponentFactory.Krypton.Toolkit.KryptonLabel();
             this.btnBrowseInputFile = new ComponentFactory.Krypton.Toolkit.KryptonButton();
             this.gridViewResults = new ComponentFactory.Krypton.Toolkit.KryptonDataGridView();
+            this.ExportContextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -50,6 +53,8 @@
             this.outputDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.kryptonContextMenuItems1 = new ComponentFactory.Krypton.Toolkit.KryptonContextMenuItems();
+            this.ExportsaveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            this.progressBar = new System.Windows.Forms.ProgressBar();
             ((System.ComponentModel.ISupportInitialize)(this.kryptonSplitContainer1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.kryptonSplitContainer1.Panel1)).BeginInit();
             this.kryptonSplitContainer1.Panel1.SuspendLayout();
@@ -63,6 +68,7 @@
             this.loadDataGrpBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.comBoxCrawlWhat)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridViewResults)).BeginInit();
+            this.ExportContextMenuStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -83,7 +89,7 @@
             this.kryptonSplitContainer1.Panel2.Controls.Add(this.gridViewResults);
             this.kryptonSplitContainer1.SeparatorStyle = ComponentFactory.Krypton.Toolkit.SeparatorStyle.HighProfile;
             this.kryptonSplitContainer1.Size = new System.Drawing.Size(1051, 595);
-            this.kryptonSplitContainer1.SplitterDistance = 471;
+            this.kryptonSplitContainer1.SplitterDistance = 477;
             this.kryptonSplitContainer1.TabIndex = 0;
             // 
             // gridViewInputFile
@@ -94,9 +100,9 @@
             this.RegNum,
             this.URL});
             this.gridViewInputFile.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gridViewInputFile.Location = new System.Drawing.Point(0, 97);
+            this.gridViewInputFile.Location = new System.Drawing.Point(0, 138);
             this.gridViewInputFile.Name = "gridViewInputFile";
-            this.gridViewInputFile.Size = new System.Drawing.Size(471, 498);
+            this.gridViewInputFile.Size = new System.Drawing.Size(477, 457);
             this.gridViewInputFile.TabIndex = 2;
             // 
             // ID
@@ -126,11 +132,12 @@
             // 
             // loadDataGrpBox.Panel
             // 
+            this.loadDataGrpBox.Panel.Controls.Add(this.progressBar);
             this.loadDataGrpBox.Panel.Controls.Add(this.kryptonLabel1);
             this.loadDataGrpBox.Panel.Controls.Add(this.comBoxCrawlWhat);
             this.loadDataGrpBox.Panel.Controls.Add(this.lblLoadedfile);
             this.loadDataGrpBox.Panel.Controls.Add(this.btnBrowseInputFile);
-            this.loadDataGrpBox.Size = new System.Drawing.Size(471, 97);
+            this.loadDataGrpBox.Size = new System.Drawing.Size(477, 138);
             this.loadDataGrpBox.TabIndex = 0;
             this.loadDataGrpBox.Text = "Load Data";
             this.loadDataGrpBox.Values.Heading = "Load Data";
@@ -151,13 +158,7 @@
             this.comBoxCrawlWhat.DropDownWidth = 121;
             this.comBoxCrawlWhat.Items.AddRange(new object[] {
             "Social Media",
-            "Facebook",
-            "Twitter",
-            "Linkedin",
-            "YouTube",
             "Contact Info",
-            "Emails",
-            "Phones",
             "Mission Statment",
             "Description"});
             this.comBoxCrawlWhat.Location = new System.Drawing.Point(343, 16);
@@ -186,11 +187,28 @@
             // gridViewResults
             // 
             this.gridViewResults.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.gridViewResults.ContextMenuStrip = this.ExportContextMenuStrip1;
             this.gridViewResults.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gridViewResults.Location = new System.Drawing.Point(0, 0);
             this.gridViewResults.Name = "gridViewResults";
-            this.gridViewResults.Size = new System.Drawing.Size(575, 595);
+            this.gridViewResults.Size = new System.Drawing.Size(569, 595);
             this.gridViewResults.TabIndex = 0;
+            // 
+            // ExportContextMenuStrip1
+            // 
+            this.ExportContextMenuStrip1.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.ExportContextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem1});
+            this.ExportContextMenuStrip1.Name = "ExportContextMenuStrip1";
+            this.ExportContextMenuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
+            this.ExportContextMenuStrip1.Size = new System.Drawing.Size(149, 26);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(148, 22);
+            this.toolStripMenuItem1.Text = "Export To CSV";
+            this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
             // 
             // openFileDialog1
             // 
@@ -265,6 +283,13 @@
             this.helpToolStripMenuItem1.Size = new System.Drawing.Size(44, 20);
             this.helpToolStripMenuItem1.Text = "Help";
             // 
+            // progressBar
+            // 
+            this.progressBar.Location = new System.Drawing.Point(4, 84);
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(466, 29);
+            this.progressBar.TabIndex = 3;
+            // 
             // mainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -275,6 +300,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "mainForm";
             this.Text = "P2G";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             ((System.ComponentModel.ISupportInitialize)(this.kryptonSplitContainer1.Panel1)).EndInit();
             this.kryptonSplitContainer1.Panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.kryptonSplitContainer1.Panel2)).EndInit();
@@ -289,6 +315,7 @@
             this.loadDataGrpBox.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.comBoxCrawlWhat)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridViewResults)).EndInit();
+            this.ExportContextMenuStrip1.ResumeLayout(false);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -320,6 +347,10 @@
         private System.Windows.Forms.ToolStripMenuItem outputDirectoryToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem1;
         private ComponentFactory.Krypton.Toolkit.KryptonContextMenuItems kryptonContextMenuItems1;
+        private System.Windows.Forms.ContextMenuStrip ExportContextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.SaveFileDialog ExportsaveFileDialog;
+        private System.Windows.Forms.ProgressBar progressBar;
     }
 }
 
