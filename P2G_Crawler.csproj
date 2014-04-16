@@ -52,6 +52,12 @@
   <ItemGroup>
     <Compile Include="CrawlingManager.cs" />
     <Compile Include="CrawlingSettings.cs" />
+    <Compile Include="DataBaseForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DataBaseForm.Designer.cs">
+      <DependentUpon>DataBaseForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="P2G.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -60,6 +66,10 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Settings.cs" />
+    <EmbeddedResource Include="DataBaseForm.resx">
+      <DependentUpon>DataBaseForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="P2G.resx">
       <DependentUpon>P2G.cs</DependentUpon>
     </EmbeddedResource>

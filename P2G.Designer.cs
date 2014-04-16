@@ -35,6 +35,7 @@
             this.RegNum = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.URL = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.loadDataGrpBox = new ComponentFactory.Krypton.Toolkit.KryptonGroupBox();
+            this.progressBar = new System.Windows.Forms.ProgressBar();
             this.kryptonLabel1 = new ComponentFactory.Krypton.Toolkit.KryptonLabel();
             this.comBoxCrawlWhat = new ComponentFactory.Krypton.Toolkit.KryptonComboBox();
             this.lblLoadedfile = new ComponentFactory.Krypton.Toolkit.KryptonLabel();
@@ -48,13 +49,15 @@
             this.browseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RuntoolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pauseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.crawlingParametersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.outputDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.databaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.kryptonContextMenuItems1 = new ComponentFactory.Krypton.Toolkit.KryptonContextMenuItems();
             this.ExportsaveFileDialog = new System.Windows.Forms.SaveFileDialog();
-            this.progressBar = new System.Windows.Forms.ProgressBar();
+            this.kryptonButton1 = new ComponentFactory.Krypton.Toolkit.KryptonButton();
             ((System.ComponentModel.ISupportInitialize)(this.kryptonSplitContainer1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.kryptonSplitContainer1.Panel1)).BeginInit();
             this.kryptonSplitContainer1.Panel1.SuspendLayout();
@@ -132,6 +135,7 @@
             // 
             // loadDataGrpBox.Panel
             // 
+            this.loadDataGrpBox.Panel.Controls.Add(this.kryptonButton1);
             this.loadDataGrpBox.Panel.Controls.Add(this.progressBar);
             this.loadDataGrpBox.Panel.Controls.Add(this.kryptonLabel1);
             this.loadDataGrpBox.Panel.Controls.Add(this.comBoxCrawlWhat);
@@ -141,6 +145,13 @@
             this.loadDataGrpBox.TabIndex = 0;
             this.loadDataGrpBox.Text = "Load Data";
             this.loadDataGrpBox.Values.Heading = "Load Data";
+            // 
+            // progressBar
+            // 
+            this.progressBar.Location = new System.Drawing.Point(4, 84);
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(466, 29);
+            this.progressBar.TabIndex = 3;
             // 
             // kryptonLabel1
             // 
@@ -181,7 +192,7 @@
             this.btnBrowseInputFile.Name = "btnBrowseInputFile";
             this.btnBrowseInputFile.Size = new System.Drawing.Size(90, 25);
             this.btnBrowseInputFile.TabIndex = 0;
-            this.btnBrowseInputFile.Values.Text = "Browse";
+            this.btnBrowseInputFile.Values.Text = "Browse File";
             this.btnBrowseInputFile.Click += new System.EventHandler(this.btnBrowseInputFile_Click);
             // 
             // gridViewResults
@@ -251,16 +262,26 @@
             // 
             // RuntoolsToolStripMenuItem
             // 
+            this.RuntoolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.pauseToolStripMenuItem});
             this.RuntoolsToolStripMenuItem.Name = "RuntoolsToolStripMenuItem";
             this.RuntoolsToolStripMenuItem.Size = new System.Drawing.Size(40, 20);
             this.RuntoolsToolStripMenuItem.Text = "Run";
             this.RuntoolsToolStripMenuItem.Click += new System.EventHandler(this.RuntoolsToolStripMenuItem_Click);
             // 
+            // pauseToolStripMenuItem
+            // 
+            this.pauseToolStripMenuItem.Name = "pauseToolStripMenuItem";
+            this.pauseToolStripMenuItem.Size = new System.Drawing.Size(105, 22);
+            this.pauseToolStripMenuItem.Text = "Pause";
+            this.pauseToolStripMenuItem.Click += new System.EventHandler(this.pauseToolStripMenuItem_Click);
+            // 
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.crawlingParametersToolStripMenuItem,
-            this.outputDirectoryToolStripMenuItem});
+            this.outputDirectoryToolStripMenuItem,
+            this.databaseToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.helpToolStripMenuItem.Text = "Settings";
@@ -277,18 +298,27 @@
             this.outputDirectoryToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
             this.outputDirectoryToolStripMenuItem.Text = "Output Directory";
             // 
+            // databaseToolStripMenuItem
+            // 
+            this.databaseToolStripMenuItem.Name = "databaseToolStripMenuItem";
+            this.databaseToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.databaseToolStripMenuItem.Text = "Database";
+            this.databaseToolStripMenuItem.Click += new System.EventHandler(this.databaseToolStripMenuItem_Click);
+            // 
             // helpToolStripMenuItem1
             // 
             this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
             this.helpToolStripMenuItem1.Size = new System.Drawing.Size(44, 20);
             this.helpToolStripMenuItem1.Text = "Help";
             // 
-            // progressBar
+            // kryptonButton1
             // 
-            this.progressBar.Location = new System.Drawing.Point(4, 84);
-            this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(466, 29);
-            this.progressBar.TabIndex = 3;
+            this.kryptonButton1.Location = new System.Drawing.Point(106, 17);
+            this.kryptonButton1.Name = "kryptonButton1";
+            this.kryptonButton1.Size = new System.Drawing.Size(90, 25);
+            this.kryptonButton1.TabIndex = 7;
+            this.kryptonButton1.Values.Text = "Load From DB";
+            this.kryptonButton1.Click += new System.EventHandler(this.kryptonButton1_Click);
             // 
             // mainForm
             // 
@@ -351,6 +381,9 @@
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.SaveFileDialog ExportsaveFileDialog;
         private System.Windows.Forms.ProgressBar progressBar;
+        private System.Windows.Forms.ToolStripMenuItem pauseToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem databaseToolStripMenuItem;
+        private ComponentFactory.Krypton.Toolkit.KryptonButton kryptonButton1;
     }
 }
 

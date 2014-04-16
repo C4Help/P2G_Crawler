@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -14,6 +15,8 @@ namespace P2G_Crawler
     public partial class mainForm : Form
     {
         CrawlingSettings cs = null;
+        bool isPaused = false;
+        int count = 0;
         public mainForm()
         {
             InitializeComponent();
@@ -63,11 +66,12 @@ namespace P2G_Crawler
 
                 // get a list of string, regnum, url and data strings
                 Dictionary<string, string> Results = CrawlingManager.Crawl(RegNum, Url, cs);
-
+                count++;
                 // If the returned results are empty, insert invalid row in the grid view
-                if (Results == null) AddInvalidRaw(dr);
+                if (Results == null) AddInvalidRow(dr);
                 else AddValidRow(dr, Results);
 
+                
                 progressBar.Value++;
 
             }
@@ -83,23 +87,30 @@ namespace P2G_Crawler
             DataGridViewCellStyle style = new DataGridViewCellStyle();
             style.BackColor = Color.LightGreen;
             style.ForeColor = Color.Black;
-            dgvr.Cells[2].Style = style;
+            dgvr.Cells[3].Style = style;
 
             // Based on the Crawling Settings, add the new data to the result grid view
             switch (cs.CrawlItemType)
             {
                 case "Social Media":
-                    dgvr.SetValues(new object[] { dr.Cells[1].Value, dr.Cells[2].Value, "Valid", results["facebook"], results["linkedin"], results["twitter"], results["youtube"] });
+                    dgvr.SetValues(new object[] {count, dr.Cells[1].Value, dr.Cells[2].Value, "Valid", results["facebook"], results["linkedin"], results["twitter"], results["youtube"] });
+                    SaveToDB(count, dr.Cells[1].Value, dr.Cells[2].Value, "Valid", results["facebook"], results["linkedin"], results["twitter"], results["youtube"]);
                     break;
                 case "Contact Info":
-                    dgvr.SetValues(new object[] { dr.Cells[1].Value, dr.Cells[2].Value, "Valid", results["email"], results["phone"], results["fax"] });
+                    dgvr.SetValues(new object[] {count, dr.Cells[1].Value, dr.Cells[2].Value, "Valid", results["email"], results["phone"], results["fax"] });
 
                     break;
 
             }
             gridViewResults.Rows.Add(dgvr);
         }
-        private void AddInvalidRaw(DataGridViewRow dr)
+
+        private void SaveToDB(int count, object p1, object p2, string p3, string p4, string p5, string p6, string p7)
+        {
+            SqlConnection conn = new SqlConnection(Settings.ConnectionString);
+
+        }
+        private void AddInvalidRow(DataGridViewRow dr)
         {
             DataGridViewCellStyle style = new DataGridViewCellStyle();
             style.BackColor = Color.Red;
@@ -107,12 +118,14 @@ namespace P2G_Crawler
 
             DataGridViewRow dgvr = new DataGridViewRow();
             dgvr.CreateCells(gridViewResults);
-            dgvr.SetValues(new object[] { dr.Cells[1].Value, dr.Cells[2].Value, "Invalid" });
-            dgvr.Cells[2].Style = style;
+            dgvr.SetValues(new object[] {count, dr.Cells[1].Value, dr.Cells[2].Value, "Invalid" });
+            dgvr.Cells[3].Style = style;
             gridViewResults.Rows.Add(dgvr);
         }
         private void InitResultGridView()
         {
+            DataGridViewTextBoxColumn RowColumn = new DataGridViewTextBoxColumn();
+            RowColumn.HeaderText = "Row Number";
             DataGridViewTextBoxColumn RegNumColumn = new DataGridViewTextBoxColumn();
             RegNumColumn.HeaderText = "Registration Number";
             DataGridViewTextBoxColumn WebSiteColumn = new DataGridViewTextBoxColumn();
@@ -138,7 +151,7 @@ namespace P2G_Crawler
                     YouTubeColumn.HeaderText = "YouTube Link";
                     TwitterColumn.HeaderText = "Twitter Link";
                     LinkedinColumn.HeaderText = "Linkedin Link";
-                    gridViewResults.Columns.AddRange(new DataGridViewTextBoxColumn[] { RegNumColumn, WebSiteColumn, ValidColumn, FacebookColumn, LinkedinColumn, TwitterColumn, YouTubeColumn });
+                    gridViewResults.Columns.AddRange(new DataGridViewTextBoxColumn[] { RowColumn,RegNumColumn, WebSiteColumn, ValidColumn, FacebookColumn, LinkedinColumn, TwitterColumn, YouTubeColumn });
                     Application.DoEvents();
                     break;
                 case "Contact Info":
@@ -146,7 +159,7 @@ namespace P2G_Crawler
                     EmailColumn.HeaderText = "Email";
                    PhoneColumn.HeaderText = "Phone";
                    FaxColumn.HeaderText = "Fax";
-                    gridViewResults.Columns.AddRange(new DataGridViewTextBoxColumn[] { RegNumColumn, WebSiteColumn, ValidColumn, EmailColumn, PhoneColumn, FaxColumn });
+                   gridViewResults.Columns.AddRange(new DataGridViewTextBoxColumn[] { RowColumn,RegNumColumn, WebSiteColumn, ValidColumn, EmailColumn, PhoneColumn, FaxColumn });
                     Application.DoEvents();
                     break;
             }
@@ -187,6 +200,43 @@ namespace P2G_Crawler
                 sw.Close();
                 MessageBox.Show("The file " + ExportsaveFileDialog.FileName + " is saved");
             }
+        }
+
+        private void pauseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            isPaused = true;
+        }
+
+        private void databaseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DataBaseForm dbf = new DataBaseForm();
+            dbf.ShowDialog();
+        }
+
+     
+        private void kryptonButton1_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                DataBaseForm dbf = new DataBaseForm();
+                if (dbf.ShowDialog() == DialogResult.Cancel)
+                {
+                    for (int i = 0; i < Settings.InputData.Count; i++)
+                    {
+                        string[] parts = new string[] { i.ToString(),Settings.InputData.Keys.ElementAt(i), Settings.InputData.Values.ElementAt(i) };
+
+                        gridViewInputFile.Rows.Add(parts);
+                    }
+
+                    progressBar.Maximum = gridViewInputFile.Rows.Count;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
         }
     }
 }
